@@ -1,0 +1,20 @@
+{
+    "manifest_version": 3,
+    "name": "cripto",
+    "version": "1.0",
+    "description": "A simple Chrome extension",
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "icons/baleia16.png",
+        "64": "icons/baleia64.png",
+        "128": "icons/baleia128.png"
+      }
+    },
+    "permissions": [
+      "storage",
+      "activeTab",
+      "scripting"
+    ]
+  }
+  
