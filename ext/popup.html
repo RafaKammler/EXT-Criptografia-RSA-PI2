@@ -8,47 +8,47 @@
   <div class="n-input-box">
     <input
             type="integer"
-            id="nInput"
+            id="canalInput"
             placeholder="Insira o canal" />
   </div>
     <h1>Teste de criptografia RSA</h1>
     <div>
 
-      <button id="generateKeys">Gerar Chaves</button>
+      <button id="gerarChaves">Gerar Chaves</button>
       <h4>Chaves geradas:</h4>
-      <p>Chave publica: <span id="publicKeyGenerated"></span></p>
-      <p>Chave privada: <span id="privateKeyGenerated"></span></p>
-      <p>Canal: <span id="nGenerated"></span></p>
+      <p>Chave publica: <span id="chavePublicaGerada"></span></p>
+      <p>Chave privada: <span id="chavePrivadaGerada"></span></p>
+      <p>Canal: <span id="canalGerado"></span></p>
     </div>
     <div>
       <h2>Criptografar a mensagem</h2>
       <input
         type="text"
-        id="mensageminput"
+        id="mensagemInput"
         placeholder="Insira a mensagem"
       />
       <input
         type="text"
-        id="publicKeyInput"
+        id="chavePublicaInput"
         placeholder="Enter public key"
       />
-      <button id="handleEncryptButton">Encrypt</button>
+      <button id="botaoCriptografar">Encrypt</button>
       <p>Texto criptografado: <span id="encryptedText"></span></p>
     </div>
     <div>
       <h2>Descriptografar a mensagem</h2>
       <input
         type="text"
-        id="encryptedInput"
+        id="textoCriptografado"
         placeholder="Enter encrypted message"
       />
       <input
         type="text"
-        id="privateKeyInput"
+        id="chavePrivadaInput"
         placeholder="Enter private key"
       />
-      <button id="decryptButton">Decrypt</button>
-      <p>Texto descriptografado: <span id="decryptedText"></span></p>
+      <button id="botaoDescriptografar">Decrypt</button>
+      <p>Texto descriptografado: <span id="textoDescriptografado"></span></p>
     </div>
   </div>
   <script src="front.js"></script>

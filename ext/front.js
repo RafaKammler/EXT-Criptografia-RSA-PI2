@@ -1,43 +1,43 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const generateKeysButton = document.getElementById('generateKeys');
-  const handleEncryptButton = document.getElementById('handleEncryptButton');
-  const decryptButton = document.getElementById('decryptButton');
-  const publicKeySpan = document.getElementById('publicKeyGenerated');
-  const privateKeySpan = document.getElementById('privateKeyGenerated');
-  const nSpan = document.getElementById('nGenerated');
-  const nInput = document.getElementById('nInput');
-  const publicKeyInput = document.getElementById('publicKeyInput');
-  const privateKeyInput = document.getElementById('privateKeyInput');
-  const messageInput = document.getElementById('mensageminput');
-  const encryptedInput = document.getElementById('encryptedInput');
-  const encryptedTextSpan = document.getElementById('encryptedText');
-  const decryptedTextSpan = document.getElementById('decryptedText');
+  const botaoGerarChaves = document.getElementById('gerarChaves');
+  const botaoCriptografar = document.getElementById('botaoCriptografar');
+  const botaoDescriptografar = document.getElementById('botaoDescriptografar');
+  const chavePublicaSpan = document.getElementById('chavePublicaGerada');
+  const chavePrivadaSpan = document.getElementById('chavePrivadaGerada');
+  const canalSpan = document.getElementById('canalGerado');
+  const canalInput = document.getElementById('canalInput');
+  const chavePublicaInput = document.getElementById('chavePublicaInput');
+  const chavePrivadaInput = document.getElementById('chavePrivadaInput');
+  const inputMensagem = document.getElementById('mensagemInput');
+  const inputMensagemCriptografada = document.getElementById('textoCriptografado');
+  const textoCriptografadoSpan = document.getElementById('encryptedText');
+  const textoDescriptografadoSpan = document.getElementById('textoDescriptografado');
 
-  const generateKeys = async () => {
-    const response = await fetch('http://localhost:5000/generate_keys', {
+  const gerarChaves = async () => {
+    const response = await fetch('http://localhost:5000/gerar_chaves', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       }
     });
     const data = await response.json();
-    publicKeySpan.textContent = data.public_key;
-    privateKeySpan.textContent = data.private_key;
-    nSpan.textContent = data.n;
+    chavePublicaSpan.textContent = data.chave_publica;
+    chavePrivadaSpan.textContent = data.chave_privada;
+    canalSpan.textContent = data.canal;
   };
 
-  generateKeysButton.addEventListener('click', generateKeys);
+  botaoGerarChaves.addEventListener('click', gerarChaves);
 
-  const sendInputPublicKey = async (publicKey, message, privateKey, n) => {
+  const sendInputPublicKey = async (chavePublica, n) => {
     try {
-      const response = await fetch('http://localhost:5000/get_public_key_input', {
+      const response = await fetch('http://localhost:5000/rota_chave_pub', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          public_key: publicKey,
-          n: n
+          chave_publica: chavePublica,
+          canal: n,
         })
       });
       const data = await response.json();
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const sendInputPrivateKey = async (privateKey, n) => {
     try {
-      const response = await fetch('http://localhost:5000/get_private_key_input', {
+      const response = await fetch('http://localhost:5000/rota_chave_priv', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -63,50 +63,50 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  const encryptMessage = async (message) => {
+  const encryptMessage = async (mensagem, chavePublica, canal) => {
     try {
-      const response = await fetch('http://localhost:5000/encrypt', {
+      const response = await fetch('http://localhost:5000/criptografar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message })
+        body: JSON.stringify({ mensagem, chave_publica: chavePublica, canal })
       });
       const data = await response.json();
-      encryptedTextSpan.textContent = data.encrypted_text;
+      textoCriptografadoSpan.textContent = data.mensagem_criptografada;
     } catch (error) {
       console.error('Error encrypting message:', error);
     }
   };
 
-  const decryptMessage = async (encryptedText) => {
+  const decryptMessage = async (textoCriptografado, chavePrivada, canal) => {
     try {
-      const response = await fetch('http://localhost:5000/decrypt', {
+      const response = await fetch('http://localhost:5000/descriptografar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ encryptedText })
+        body: JSON.stringify({ encryptedText: textoCriptografado, chave_privada: chavePrivada, canal })
       });
       const data = await response.json();
-      decryptedTextSpan.textContent = data.decrypted_message;
+      textoDescriptografadoSpan.textContent = data.decrypted_message;
     } catch (error) {
       console.error('Error decrypting message:', error);
     }
   };
 
   const handleEncryptClick = async () => {
-    const publicKey = publicKeyInput.value;
-    const message = messageInput.value;
-    const n = nInput.value;
-    await sendInputPublicKey(publicKey, message, null, n);
-    await encryptMessage(message);
+    const chavePublica = chavePublicaInput.value;
+    const message = inputMensagem.value;
+    const n = canalInput.value;
+    await sendInputPublicKey(chavePublica, n);
+    await encryptMessage(message, chavePublica, n);
   };
 
   const handleDecryptClick = async () => {
-    const privateKey = privateKeyInput.value;
-    const encryptedText = encryptedInput.value;
-    const n = nInput.value;
+    const privateKey = chavePrivadaInput.value;
+    const textoCriptografado = inputMensagemCriptografada.value;
+    const n = canalInput.value;
     await sendInputPrivateKey(privateKey, n);
-    await decryptMessage(encryptedText);
+    await decryptMessage(textoCriptografado, privateKey, n);
   };
 
-  handleEncryptButton.addEventListener('click', handleEncryptClick);
-  decryptButton.addEventListener('click', handleDecryptClick);
+  botaoCriptografar.addEventListener('click', handleEncryptClick);
+  botaoDescriptografar.addEventListener('click', handleDecryptClick);
 });
