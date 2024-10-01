@@ -1,9 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
   const generateKeysButton = document.getElementById('generateKeys');
+  const handleEncryptButton = document.getElementById('handleEncryptButton');
+  const decryptButton = document.getElementById('decryptButton');
   const publicKeySpan = document.getElementById('publicKeyGenerated');
   const privateKeySpan = document.getElementById('privateKeyGenerated');
-  const searchKeysButton = document.getElementById('searchKeysButton')
-  const channelSpan = document.getElementById('channelSpan')
+  const nSpan = document.getElementById('nGenerated');
+  const nInput = document.getElementById('nInput');
+  const publicKeyInput = document.getElementById('publicKeyInput');
+  const privateKeyInput = document.getElementById('privateKeyInput');
+  const messageInput = document.getElementById('mensageminput');
+  const encryptedInput = document.getElementById('encryptedInput');
+  const encryptedTextSpan = document.getElementById('encryptedText');
+  const decryptedTextSpan = document.getElementById('decryptedText');
 
   const generateKeys = async () => {
     const response = await fetch('http://localhost:5000/generate_keys', {
@@ -15,57 +23,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = await response.json();
     publicKeySpan.textContent = data.public_key;
     privateKeySpan.textContent = data.private_key;
+    nSpan.textContent = data.n;
   };
-
 
   generateKeysButton.addEventListener('click', generateKeys);
 
-  function searchText() {
-    try {
-      const pageText = document.body.innerText;
-      const match = pageText.includes('canal: ')
-      if (match) {
-
-        canalIndex = pageText.indexOf('canal: ');
-        textAfterCanal = pageText.substring(canalIndex + 'canal: '.length).trim();
-        canal = textAfterCanal[0];
-        connectionChannel = canal;
-        return connectionChannel;
-      }
-    }
-    catch (error) {
-      console.log("erro")
-    }
-  }
-  const searchKeys = async () => {
-    try{
-    connectionChannel = searchText();
-    const response = await fetch('http://localhost:5000/get_channel',
-      {
-        method: 'POST',
-        headers:
-        {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ channel: connectionChannel })
-      }
-
-    );
-    channelSpan.textContent = connectionChannel;
-  } catch(err){
-  }
-  
-  }
-  searchKeysButton.addEventListener('click', searchKeys)
-
-  const sendInputPublicKey = async (publicKey) => {
+  const sendInputPublicKey = async (publicKey, message, privateKey, n) => {
     try {
       const response = await fetch('http://localhost:5000/get_public_key_input', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ public_key: publicKey })
+        body: JSON.stringify({
+          public_key: publicKey,
+          n: n
+        })
       });
       const data = await response.json();
       return data;
@@ -74,14 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  const sendInputPrivateKey = async (privateKey) => {
+  const sendInputPrivateKey = async (privateKey, n) => {
     try {
       const response = await fetch('http://localhost:5000/get_private_key_input', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ private_key: privateKey })
+        body: JSON.stringify({ private_key: privateKey, n: n })
       });
       const data = await response.json();
       return data;
@@ -90,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  const encryptMessage = async () => {
+  const encryptMessage = async (message) => {
     try {
       const response = await fetch('http://localhost:5000/encrypt', {
         method: 'POST',
@@ -98,13 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ message })
       });
       const data = await response.json();
-      setEncryptedText(data.encrypted_text);
+      encryptedTextSpan.textContent = data.encrypted_text;
     } catch (error) {
       console.error('Error encrypting message:', error);
     }
   };
 
-  const decryptMessage = async () => {
+  const decryptMessage = async (encryptedText) => {
     try {
       const response = await fetch('http://localhost:5000/decrypt', {
         method: 'POST',
@@ -112,19 +85,28 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ encryptedText })
       });
       const data = await response.json();
-      setDecryptedText(data.decrypted_message);
+      decryptedTextSpan.textContent = data.decrypted_message;
     } catch (error) {
       console.error('Error decrypting message:', error);
     }
   };
 
   const handleEncryptClick = async () => {
-    await sendInputPublicKey(publicKeyInput);
-    await encryptMessage();
+    const publicKey = publicKeyInput.value;
+    const message = messageInput.value;
+    const n = nInput.value;
+    await sendInputPublicKey(publicKey, message, null, n);
+    await encryptMessage(message);
   };
 
   const handleDecryptClick = async () => {
-    await sendInputPrivateKey(privateKeyInput);
-    await decryptMessage();
+    const privateKey = privateKeyInput.value;
+    const encryptedText = encryptedInput.value;
+    const n = nInput.value;
+    await sendInputPrivateKey(privateKey, n);
+    await decryptMessage(encryptedText);
   };
+
+  handleEncryptButton.addEventListener('click', handleEncryptClick);
+  decryptButton.addEventListener('click', handleDecryptClick);
 });

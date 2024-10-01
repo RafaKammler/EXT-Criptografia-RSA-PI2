@@ -2,48 +2,37 @@
 <html>
 <head>
   <title>RSA Encryption</title>
-  <style>
-    body {
-      width: 300px;
-      font-family: Arial, sans-serif;
-    }
-    h1, h2 {
-      font-size: 16px;
-    }
-    button {
-      margin-top: 10px;
-    }
-    p {
-      word-wrap: break-word;
-    }
-  </style>
+
 </head>
 <body>
-  <div>
+  <div class="n-input-box">
+    <input
+            type="integer"
+            id="nInput"
+            placeholder="Insira o canal" />
+  </div>
     <h1>Teste de criptografia RSA</h1>
     <div>
-      <h2>Gerador de chaves</h2>
-      <button id="generateKeys">Chaves Geradas:</button>
+
+      <button id="generateKeys">Gerar Chaves</button>
+      <h4>Chaves geradas:</h4>
       <p>Chave publica: <span id="publicKeyGenerated"></span></p>
       <p>Chave privada: <span id="privateKeyGenerated"></span></p>
-    </div>
-    <div>
-      <button id="searchKeysButton"> procurar chaves </button>
-      <p>canal: <span id="channelSpan"></span></p>
+      <p>Canal: <span id="nGenerated"></span></p>
     </div>
     <div>
       <h2>Criptografar a mensagem</h2>
       <input
         type="text"
-        id="message"
-        placeholder="Enter message"
+        id="mensageminput"
+        placeholder="Insira a mensagem"
       />
       <input
         type="text"
         id="publicKeyInput"
         placeholder="Enter public key"
       />
-      <button id="encryptButton">Encrypt</button>
+      <button id="handleEncryptButton">Encrypt</button>
       <p>Texto criptografado: <span id="encryptedText"></span></p>
     </div>
     <div>
@@ -65,3 +54,22 @@
   <script src="front.js"></script>
 </body>
 </html>
+<style>
+  body {
+    width: 300px;
+    font-family: Arial, sans-serif;
+  }
+  h1, h2 {
+    font-size: 16px;
+  }
+  button {
+    margin-top: 10px;
+  }
+  p {
+    word-wrap: break-word;
+  }
+  .n-input-box{
+    align-content: flex-end;
+  }
+
+</style>
