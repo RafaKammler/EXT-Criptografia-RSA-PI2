@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from cryptography import gerar_chaves, load_keys, encoder, decoder, undo_joined_message
+from cryptography import gerar_chaves, codificar_msg, decodificar, separar_msg
 
 app = Flask(__name__)
 CORS(app)
@@ -14,12 +14,11 @@ canal = None
 @app.route('/gerar_chaves', methods=['POST'])
 def enviar_chaves():
     global chave_publica, chave_privada, canal
-    gerar_chaves()
-    chave_publica, chave_privada, canal = load_keys()
+    chave_publica, chave_privada, canal = gerar_chaves()
     return jsonify({'chave_publica': chave_publica, 'chave_privada': chave_privada, 'canal': canal})
 
 # Rota para receber a chave pública e o canal do frontend
-@app.route('/rota_chave_pu.b', methods=['POST'])
+@app.route('/rota_chave_pub', methods=['POST'])
 def receber_chave_publica():
     global chave_publica, canal
     data = request.get_json()
@@ -42,7 +41,7 @@ def criptografar():
     mensagem = conteudo['mensagem']
     chave_publica = int(conteudo['chave_publica'])
     canal = int(conteudo['canal'])
-    mensagem_codificada = encoder(mensagem, chave_publica, canal)
+    mensagem_codificada = codificar_msg(mensagem, chave_publica, canal)
     mensagem_criptografada = ' '.join(str(p) for p in mensagem_codificada)
     return jsonify({'mensagem_criptografada': mensagem_criptografada})
 
@@ -53,8 +52,8 @@ def descriptografar():
     mensagem_criptografada = conteudo['encryptedText']
     chave_privada = int(conteudo['chave_privada'])
     canal = int(conteudo['canal'])
-    mensagem_criptografada_separada = undo_joined_message(mensagem_criptografada)
-    mensagem_original = decoder(mensagem_criptografada_separada, chave_privada, canal)
+    mensagem_criptografada_separada = separar_msg(mensagem_criptografada)
+    mensagem_original = decodificar(mensagem_criptografada_separada, chave_privada, canal)
     return jsonify({'decrypted_message': mensagem_original})
 
 if __name__ == '__main__':

@@ -1,12 +1,7 @@
 import math
 import random
-import os
-import tempfile
 
-# Inicia variáveis globais para armazenar os caminhos dos arquivos temporários
-CAMINHO_CHAVE_PUB = None
-CAMINHO_CHAVE_PRIV = None
-CAMINHO_CANAL = None
+
 
 # Função que encontra todos os números primos até 250, isso por meio da Sifra de Eratóstenes
 # Funcionamento: https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
@@ -20,13 +15,14 @@ def encontrar_num_primos():
     primos = [i for i, eh_primo in enumerate(sifra) if eh_primo]
     return primos
 
-# Retorna um número aleatório
+
+# Retorna um número aleatório da lista
 def primo_aleatorio(primos):
     return random.choice(primos)
 
+
 # Geração das chaves e carregamento em seus respectivos arquivos
 def gerar_chaves():
-    global CAMINHO_CHAVE_PUB, CAMINHO_CHAVE_PRIV, CAMINHO_CANAL
 
     # Encontrar dois primos aleatórios
     primos = encontrar_num_primos()
@@ -50,75 +46,55 @@ def gerar_chaves():
     # Encontrar d tal que (d * e) % φ(n) == 1
     chave_privada = pow(chave_publica, -1, fi)
 
-    with tempfile.NamedTemporaryFile(delete=False, mode='w', suffix='.txt') as public_key_file, \
-            tempfile.NamedTemporaryFile(delete=False, mode='w', suffix='.txt') as private_key_file, \
-            tempfile.NamedTemporaryFile(delete=False, mode='w', suffix='.txt') as n_file:
+    return chave_publica, chave_privada, n
 
-        CAMINHO_CHAVE_PUB = public_key_file.name
-        CAMINHO_CHAVE_PRIV = private_key_file.name
-        CAMINHO_CANAL = n_file.name
+# Realiza a operação de exponenciação modular de maneira eficiente
+# Calculando (base^exp) % mod
+def expo_modular(base, exp, mod):
 
-        # Escreva as chaves nos arquivos temporários
-        public_key_file.write(str(chave_publica))
-        private_key_file.write(str(chave_privada))
-        n_file.write(str(n))
-
-def load_keys():
-    global CAMINHO_CHAVE_PUB, CAMINHO_CHAVE_PRIV, CAMINHO_CANAL
-
-    try:
-        if not (CAMINHO_CHAVE_PUB and CAMINHO_CHAVE_PRIV and CAMINHO_CANAL):
-            gerar_chaves()
-
-        with open(CAMINHO_CHAVE_PUB, 'r') as file:
-            public_key = int(file.read())
-        with open(CAMINHO_CHAVE_PRIV, 'r') as file2:
-            private_key = int(file2.read())
-        with open(CAMINHO_CANAL, 'r') as file3:
-            n = int(file3.read())
-
-        os.remove(CAMINHO_CHAVE_PUB)
-        os.remove(CAMINHO_CHAVE_PRIV)
-        os.remove(CAMINHO_CANAL)
-
-        CAMINHO_CHAVE_PUB = None
-        CAMINHO_CHAVE_PRIV = None
-        CAMINHO_CANAL = None
-
-        return public_key, private_key, n
-    except FileNotFoundError:
-        gerar_chaves()
-        return load_keys()
-
-def mod_exp(base, exp, mod):
+    # Converte base e mod para inteiros, inicializa o resultado e reduz a base
     base = int(base)
     mod = int(mod)
-    result = 1
+    resultado = 1
     base = base % mod
+
+    # Enquanto exp for maior que 0:
+    # Se exp for ímpar, então resultado = (resultado * base) % mod
+    # E exp = exp / 2, base = (base * base) % mod
     while exp > 0:
         if (exp % 2) == 1:
-            result = (result * base) % mod
+            resultado = (resultado * base) % mod
         exp = exp >> 1
         base = (base * base) % mod
-    return result
 
-def encrypt(message, public_key, n):
-    return mod_exp(message, public_key, n)
+    return resultado
 
-def decrypt(encrypted_text, private_key, n):
-    return mod_exp(encrypted_text, private_key, n)
+# Funções que criptografam e descriptografam as mensagens______________________________________________________________
 
-def encoder(message, public_key, n):
-    encoded = []
-    for letter in message:
-        encoded.append(encrypt(ord(letter), public_key, n))
-    return encoded
 
-def decoder(encoded, private_key, n):
-    decoded = ''
-    for num in encoded:
-        decoded += chr(decrypt(num, private_key, n))
-    return decoded
+def criptografar(mensagem, chave_publica, canal):
+    return expo_modular(mensagem, chave_publica, canal)
 
-def undo_joined_message(joined_message):
-    return [int(p) for p in joined_message.split()]
+def descriptografar(texto_criptografado, chave_privada, canal):
+    return expo_modular(texto_criptografado, chave_privada, canal)
+
+def codificar_msg(mensagem, chave_publica, canal):
+    msg_codificada = []
+
+    # Converte cada letra da mensagem em seu valor ASCII e criptografa
+    for letra in mensagem:
+        msg_codificada.append(criptografar(ord(letra), chave_publica, canal))
+
+    return msg_codificada
+
+def decodificar(msg_codificada, chave_privada, canal):
+    msg_decodificada = ''
+
+    # Descriptografa cada número da mensagem e converte para letra
+    for num in msg_codificada:
+        msg_decodificada += chr(descriptografar(num, chave_privada, canal))
+
+    return msg_decodificada
+
+def separar_msg(mensagem_junta):
+    return [int(p) for p in mensagem_junta.split()]
