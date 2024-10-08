@@ -2,6 +2,7 @@ import math
 import random
 
 
+# Inicia a classe para criptografia RSA
 class CriptografiaRSA:
     def __init__(self):
         self.primos = []

@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Seleciona os elementos do DOM
   const botaoGerarChaves = document.getElementById('gerarChaves');
   const botaoCriptografar = document.getElementById('botaoCriptografar');
   const botaoDescriptografar = document.getElementById('botaoDescriptografar');
@@ -13,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const textoCriptografadoSpan = document.getElementById('encryptedText');
   const textoDescriptografadoSpan = document.getElementById('textoDescriptografado');
 
+  // Função para fazer requisições à API
   const conexaoAPI = async (url, method, body = null) => {
     const config = {
       method,
@@ -23,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return response.json();
   };
 
+  // Função para gerar chaves e atualizar o DOM
   const gerarChaves = async () => {
     const data = await conexaoAPI('http://localhost:5000/gerar_chaves', 'POST');
     chavePublicaSpan.textContent = data.chave_publica;
@@ -30,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canalSpan.textContent = data.canal;
   };
 
+  // Função para criptografar a mensagem e atualizar o DOM
   const criptografarMensagem = async () => {
     const mensagem = inputMensagem.value;
     const chavePublica = chavePublicaInput.value;
@@ -38,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     textoCriptografadoSpan.textContent = data.mensagem_criptografada;
   };
 
+  // Função para descriptografar a mensagem e atualizar o DOM
   const descriptografarMensagem = async () => {
     const textoCriptografado = inputMensagemCriptografada.value;
     const chavePrivada = chavePrivadaInput.value;
@@ -46,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     textoDescriptografadoSpan.textContent = data.decrypted_message;
   };
 
+  // Adiciona eventos de clique aos botões
   botaoGerarChaves.addEventListener('click', gerarChaves);
   botaoCriptografar.addEventListener('click', criptografarMensagem);
   botaoDescriptografar.addEventListener('click', descriptografarMensagem);
