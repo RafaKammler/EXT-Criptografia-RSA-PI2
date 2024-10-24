@@ -29,7 +29,6 @@ class CriptografiaRSA:
     def gerar_chaves(self):
 
         # Encontrar dois primos aleatórios
-        primos = self.encontrar_num_primos()
         primeiro_primo_aleatorio = self.primo_aleatorio()
         segundo_primo_aleatorio = self.primo_aleatorio()
 

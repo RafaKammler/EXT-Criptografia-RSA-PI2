@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputMensagemCriptografada = document.getElementById('textoCriptografado');
   const textoCriptografadoSpan = document.getElementById('encryptedText');
   const textoDescriptografadoSpan = document.getElementById('textoDescriptografado');
+  const copyEncryptedTextButton = document.getElementById('copyEncryptedText');
+  const copyDecryptedTextButton = document.getElementById('copyDecryptedText');
 
   // Função para fazer requisições à API
   const conexaoAPI = async (url, method, body = null) => {
@@ -51,8 +53,15 @@ document.addEventListener('DOMContentLoaded', () => {
     textoDescriptografadoSpan.textContent = data.decrypted_message;
   };
 
+  const copyToClipboard = (element) => {
+    element.select();
+    document.execCommand('copy');
+  };
+
   // Adiciona eventos de clique aos botões
   botaoGerarChaves.addEventListener('click', gerarChaves);
   botaoCriptografar.addEventListener('click', criptografarMensagem);
   botaoDescriptografar.addEventListener('click', descriptografarMensagem);
+  copyEncryptedTextButton.addEventListener('click', () => copyToClipboard(textoCriptografadoSpan));
+  copyDecryptedTextButton.addEventListener('click', () => copyToClipboard(textoDescriptografadoSpan));
 });

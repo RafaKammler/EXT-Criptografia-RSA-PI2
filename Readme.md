@@ -1,5 +1,5 @@
 
-## Criptografia RSA com Flask
+## Extensão de navegador para criptografia RSA utilizando python
 
 ### Visão Geral
 
@@ -36,4 +36,4 @@ Este projeto é uma aplicação web que utiliza a criptografia RSA para criptogr
     ```bash
     python app.py
     ```
-3. Adicione os arquivos da extensão ao google por meio da ferramenta de desenvolvedor do mesmo.
+3. Adicione os arquivos da extensão ao google por meio da ferramenta de desenvolvedor e acesse a extensão funcionando.

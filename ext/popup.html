@@ -2,56 +2,40 @@
 <html>
 <head>
   <title>RSA Encryption</title>
-
 </head>
 <body>
-  <div class="n-input-box">
-    <input
-            type="integer"
-            id="canalInput"
-            placeholder="Insira o canal" />
+<div class="n-input-box">
+  <input type="integer" id="canalInput" placeholder="Insira o canal" />
+</div>
+<h1>Teste de criptografia RSA</h1>
+<div>
+  <button id="gerarChaves">Gerar Chaves</button>
+  <h4>Chaves geradas:</h4>
+  <p>Chave publica: <span id="chavePublicaGerada"></span></p>
+  <p>Chave privada: <span id="chavePrivadaGerada"></span></p>
+  <p>Canal: <span id="canalGerado"></span></p>
+</div>
+<div>
+  <h2>Criptografar a mensagem</h2>
+  <input type="text" id="mensagemInput" placeholder="Insira a mensagem" />
+  <input type="text" id="chavePublicaInput" placeholder="Insira a chave publica" />
+  <button id="botaoCriptografar">Criptografar</button>
+  <div class="input-with-icon">
+    <textarea id="encryptedText" readonly></textarea>
+    <span class="copy-icon" id="copyEncryptedText">&#x1F4CB;</span>
   </div>
-    <h1>Teste de criptografia RSA</h1>
-    <div>
-
-      <button id="gerarChaves">Gerar Chaves</button>
-      <h4>Chaves geradas:</h4>
-      <p>Chave publica: <span id="chavePublicaGerada"></span></p>
-      <p>Chave privada: <span id="chavePrivadaGerada"></span></p>
-      <p>Canal: <span id="canalGerado"></span></p>
-    </div>
-    <div>
-      <h2>Criptografar a mensagem</h2>
-      <input
-        type="text"
-        id="mensagemInput"
-        placeholder="Insira a mensagem"
-      />
-      <input
-        type="text"
-        id="chavePublicaInput"
-        placeholder="Enter public key"
-      />
-      <button id="botaoCriptografar">Encrypt</button>
-      <p>Texto criptografado: <span id="encryptedText"></span></p>
-    </div>
-    <div>
-      <h2>Descriptografar a mensagem</h2>
-      <input
-        type="text"
-        id="textoCriptografado"
-        placeholder="Enter encrypted message"
-      />
-      <input
-        type="text"
-        id="chavePrivadaInput"
-        placeholder="Enter private key"
-      />
-      <button id="botaoDescriptografar">Decrypt</button>
-      <p>Texto descriptografado: <span id="textoDescriptografado"></span></p>
-    </div>
+</div>
+<div>
+  <h2>Descriptografar a mensagem</h2>
+  <input type="text" id="textoCriptografado" placeholder="Insira a mensagem" />
+  <input type="text" id="chavePrivadaInput" placeholder="Insira a chave privada" />
+  <button id="botaoDescriptografar">Descriptografar</button>
+  <div class="input-with-icon">
+    <textarea id="textoDescriptografado" readonly></textarea>
+    <span class="copy-icon" id="copyDecryptedText">&#x1F4CB;</span>
   </div>
-  <script src="front.js"></script>
+</div>
+<script src="front.js"></script>
 </body>
 </html>
 <style>
@@ -68,8 +52,23 @@
   p {
     word-wrap: break-word;
   }
-  .n-input-box{
+  .n-input-box {
     align-content: flex-end;
   }
-
+  .input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  textarea {
+    width: 100%;
+    height: 50px;
+    margin-top: 10px;
+    padding-right: 30px; /* Space for the icon */
+  }
+  .copy-icon {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+  }
 </style>
