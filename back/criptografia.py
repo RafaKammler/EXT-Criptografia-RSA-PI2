@@ -6,6 +6,7 @@ import random
 class CriptografiaRSA:
     def __init__(self):
         self.primos = []
+        self.encontrar_num_primos()
 
     # Função que encontra todos os números primos até 250, isso por meio da Sifra de Eratóstenes
     # Funcionamento: https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
